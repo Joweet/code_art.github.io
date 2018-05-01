@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <body>
+        <meta charset="utf-8">
+        <title>Shoot The Suns</title>
+        <script type="text/javascript" src="processing.js">
+        </script>
+        <script type="application/processing">
+        PImage img;
+float [] x;
+float [] y;
+float [] xDelta;
+float [] yDelta;
+int numOfBalls = 25;
+int points = 0;
+int numOfBallsRemaining = numOfBalls;
+int mouseClicks;
+
+void setup() {
+  size(1200, 700);
+  frameRate(60);
+  img = loadImage("sun.png");
+
+  //these are all creating arrays
+  x = new float[numOfBalls];
+  y = new float[numOfBalls];
+  xDelta = new float[numOfBalls];
+  yDelta = new float[numOfBalls];
+
+  for (int i = 0; i < numOfBalls; i++) {
+    x[i] = random(30, 500);
+    y[i] = random(30, 500);
+    xDelta[i] = random(1, 10);
+    yDelta[i] = random(1, 10);
+  }
+}
+void draw() {
+
+  background(242, 235, 179);
+    if (mousePressed == true) {
+    cursor(CROSS); // Draw cursor as hand
+  } else {
+    cursor(CROSS);
+  }
+  line(mouseX, 0, mouseX, height);
+  line(0, mouseY, width, mouseY);
+  fill(255, 0, 0);
+  stroke(201, 120, 30);
+  strokeWeight(4);
+  println(millis());
+  rectMode(CENTER);
+  for (int i = 0; i < numOfBalls; i++) {
+    image(img, x[i], y[i], 40, 40);
+    x[i] = x[i] + xDelta[i];
+    y[i] = y[i] + yDelta[i];
+
+    if ((x[i] > width - 30) || (x[i] < 30)) {
+      xDelta[i] = -xDelta[i];
+    }
+    if ((y[i] > height - 30) || (y[i] < 30)) {
+      yDelta[i] = -yDelta[i];
+    }
+  }
+
+  textSize(60);
+  fill(150, 50, 255);
+  text("Shoot The Suns", 15, 60);
+  
+  text("Points: "+ (points - mouseClicks), 850, 60);
+  if (numOfBallsRemaining == 0) {
+    background(0);
+    textSize(150);
+    fill(123, 50, 255);
+    text("Game Over: "+ points, 10, 375);
+    text("Lights Out!", 10, 600);
+  }
+  text("Shots Fired: "+ mouseClicks, 15, 120);
+}
+void mousePressed() {
+  for (int i = numOfBalls - 1; i >= 0; i--) {
+    float dist = sqrt((x[i] - mouseX) * (x[i] - mouseX) + (y[i] - mouseY) * (y[i] - mouseY));
+    if (dist <= 30) {
+      x[i] = -100;
+      y[i] = -100;
+      int speedBonus = abs(int(xDelta[i] + xDelta[i]));
+      int timeBonus = int((20000 / millis()) * 10);
+      points = points + 10 + speedBonus + timeBonus;
+      numOfBallsRemaining--;
+      break;
+    }
+  }
+  if (mouseButton == LEFT) { mouseClicks++; } else { mouseClicks = 0; }
+}
+
+        </script>
+<canvas> </canvas>
+    </head>
+
+</body>
+</html>
